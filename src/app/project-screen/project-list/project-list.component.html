@@ -1,0 +1,161 @@
+<p-contextMenu #cm [model]="items"></p-contextMenu>
+<div class="card">
+  <p-table
+    #projectList
+    responsiveLayout="stack"
+    [value]="projects"
+    [(contextMenuSelection)]="selectedProject"
+    [contextMenu]="cm"
+  >
+    <ng-template pTemplate="caption"> Stack </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th>Project Code</th>
+        <th>Project Name</th>
+        <th>Created Date</th>
+        <th>Finish Date</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-project let-columns="columns">
+      <tr [pContextMenuRow]="project">
+        <td>
+          <span class="p-column-title">Project Code</span>{{ project.id }}
+        </td>
+        <td>
+          <span class="p-column-title">Project Name</span
+          >{{ project.projectName }}
+        </td>
+        <td>
+          <span class="p-column-title">Created Date</span
+          >{{ project.createdDate | date }}
+        </td>
+        <td>
+          <span class="p-column-title">Finish Date</span
+          >{{ project.finishDate | date }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<p-dialog
+  [appendTo]="projectList"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [(visible)]="showAddTaskListHeaderDialogModal"
+  [breakpoints]="{ '960px': '75vw' }"
+  (onHide)=" showAddTaskListHeaderDialogModal = false"
+>
+  <ng-template pTemplate="header">
+    <h3 style="font-weight: bold">
+      Add Task List Header To {{ selectedProject.projectName }}
+    </h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="field-checkbox mt-1" *ngFor="let header of taskListHeader$ | async">
+      <p-checkbox
+        name="group1"
+        [value]="header.id"
+        [(ngModel)]="selectedTaskListHeader"
+        [disabled]="disabledHeader(header.id)"
+        inputId="item+{{ header.header }}"
+      ></p-checkbox>
+      <label class="task-list-header" [for]="'item' + header.header">{{
+        header.header
+      }}</label>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Add New Header" class="left"
+      icon="pi pi-check" iconPos="right"
+      (click)="showAddNewTaskListHeader = true"
+    ></p-button>
+    <p-button label="Cancel"
+      (click)="showAddTaskListHeaderDialogModal = false"
+    ></p-button>
+    <p-button label="Save Headers"
+    (click)="addSelectedHeadersToProject()"
+  ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [appendTo]="projectList"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [(visible)]="showAddNewTaskListHeader"
+  [breakpoints]="{ '960px': '75vw' }"
+  (onHide)="showAddNewTaskListHeader = false"
+>
+  <ng-template pTemplate="header">
+    <h3 style="font-weight: bold">Add New Task List Header</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="mt-2 mb-1">
+      <input
+        [(ngModel)]="addTaskListHeaderObj.header"
+        type="text"
+        class="p-inputtext-sm form-control"
+        placeholder="Small"
+        pInputText
+      />
+      <div class="field-checkbox mb-1">
+        <p-checkbox
+          [(ngModel)]="addTaskListHeaderObj.isAddable"
+          [binary]="true"
+          inputId="binary"
+        ></p-checkbox>
+        <label class="task-list-header" for="binary">Is Addable</label>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Add New" (click)="addNewTaskListHeader()"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [appendTo]="projectList"
+  [modal]="true"
+  [(visible)]="showAddUserDialogModal"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw' }"
+  (onHide)="showAddUserDialogModal = false"
+>
+  <ng-template pTemplate="header">
+    <h3 style="font-weight: bold">
+      Add User to {{ selectedProject.projectName }}
+    </h3>
+  </ng-template>
+  <div class="row">
+    <div class="col-6">
+      <input
+        class="form-control"
+        type="email"
+        pInputText
+        [(ngModel)]="addEmailToProject"
+      />
+      <br />
+      <p-button
+        label="Add To List"
+        icon="pi pi-angle-double-right"
+        iconPos="right"
+        (click)="addToList()"
+      >
+      </p-button>
+    </div>
+    <div class="col-6">
+      <p-listbox
+        [options]="userList"
+        [(ngModel)]="selectedUser"
+        optionLabel="email"
+        [style]="{ width: '100%' }"
+        (onDblClick)="deleteToList($event.option)"
+      ></p-listbox>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Submit" (click)="addUserToProject()"></p-button>
+  </ng-template>
+</p-dialog>

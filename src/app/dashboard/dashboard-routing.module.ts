@@ -7,7 +7,13 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-  }
+    children:[
+      {
+        path: '',
+        loadChildren: () => import('./../project-screen/project.module').then(m => m.ProjectModule)
+      }
+    ]
+  },
 ]
 
 @NgModule({

@@ -1,12 +1,14 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgxSpinnerService } from "ngx-spinner";
+import { MessageService } from "primeng/api";
 import { LoginService } from "../login.service";
 
 @Component({
     selector: "app-login",
     templateUrl: "./login.component.html",
-    styleUrls: ["./login.component.scss"]
+    styleUrls: ["./login.component.scss"],
+    providers: [MessageService]
 })
 
 export class LoginComponent {
@@ -14,7 +16,8 @@ export class LoginComponent {
     constructor(
       private fb: FormBuilder,
       private loginService: LoginService,
-      private spinner: NgxSpinnerService
+      private spinner: NgxSpinnerService,
+      private messageService: MessageService
       ) {  
       this.loginForm = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
@@ -27,10 +30,10 @@ export class LoginComponent {
         this.spinner.show();
         this.loginService.login(this.loginForm.value).subscribe(response =>{
           this.spinner.hide();
-          console.log(response);
+          this.messageService.add({severity:'success', summary: 'Success', detail: 'Login Successful', life: 3000});
         }, error =>{
           this.spinner.hide();
-
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'Login Failed'});
         });
       } else {
         let temp = this.loginForm.controls['name'];
