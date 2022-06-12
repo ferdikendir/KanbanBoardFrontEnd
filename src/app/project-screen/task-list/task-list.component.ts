@@ -1,6 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { finalize } from 'rxjs';
+import { LoginService } from 'src/app/login-screen/login.service';
+import { ProjectService } from '../project.service';
 import { SharedService } from '../shared.service';
 
 @Component({
@@ -11,19 +15,29 @@ import { SharedService } from '../shared.service';
 export class TaskListComponent implements OnInit {
   @Input() taskList: any;
 
+  users:any[]
+
   selectedCard: any = {};
 
   taskListId = 0;
+
+  projectId: number;
 
   constructor(
     private sharedService: SharedService,
     private formBuilder: FormBuilder,
     private spinner: NgxSpinnerService,
+    private loginService: LoginService,
+    private router: Router,
+    private projectService: ProjectService
   ) {}
   public isCollapsed = false;
   addCardForm: FormGroup;
 
   ngOnInit(): void {
+    const route = this.router.url.split('/');
+    this.projectId = parseInt(route[route.length - 1]);
+    this.getUsers();
     this.createForm();
   }
 
@@ -40,6 +54,9 @@ export class TaskListComponent implements OnInit {
         [Validators.required, Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/)],
       ],
       color: ['#004a9f', Validators.required],
+      assignedUserId: [this.loginService.currentUserValue.id, Validators.required],
+      
+      reporterUserId: [this.loginService.currentUserValue.id, Validators.required],
       taskListId: [0],
     });
   }
@@ -51,14 +68,26 @@ export class TaskListComponent implements OnInit {
   //yeni card ekleme
   addCardToTaskList() {
     if (this.addCardForm.valid) {
+        this.spinner.show();
       var newCard: any = Object.assign({}, this.addCardForm.value);
       if (!newCard.id) {
-        newCard.taskListId = this.taskListId;
-        // this.taskListService.addCardToTaskList(newCard).subscribe((response: any) =>{
-        //   console.log(response)
-        // });
-      } else this.taskList.cards[this.findIndex(newCard)] = newCard;
+        newCard.taskListId = this.taskListId
+       this.projectService.addCard(newCard).pipe(finalize(() =>{
+        this.spinner.hide();
+        this.closePopup();
+       })).subscribe((response: any) => {
+
+       });
+      } else{
+         this.projectService.updateCard(newCard)
+        .pipe(finalize(() =>{
+          this.spinner.hide();
       this.closePopup();
+        }))
+        .subscribe((response: any) => {
+
+        });
+      }
     } 
     // else
     //   this.toastrService.error(
@@ -114,5 +143,22 @@ export class TaskListComponent implements OnInit {
       }
     }
     return index;
+  }
+
+  getUsers() {
+    this.spinner.show();
+    this.projectService.getAllUserByProjectId(this.projectId)
+    .pipe(finalize(() =>{
+      this.spinner.hide();
+    }))
+    .subscribe((response: any) => {
+      this.users = response.map(res => {
+        return {
+          id: res.user.id,
+          name: res.user.fullName,
+        }
+      })
+      console.log(response.map(res => res.user.fullName))
+    }, (error: any) => {});
   }
 }

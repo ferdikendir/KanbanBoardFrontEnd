@@ -98,6 +98,25 @@
               />
             </div>
           </div>
+          <div class="mb-3">
+            <label for="assigned-user">Assigned User</label>
+            <div class="input-group">
+              <p-dropdown [options]="users" formControlName="assignedUserId"
+              placeholder="Select Item" [virtualScroll]="true" optionLabel="name" optionValue="id"
+              class="form-control" [readonly]="true"
+              [itemSize]="31" [filter]="false"></p-dropdown>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="assigned-user">Reporter User</label>
+            <div class="input-group">
+              <p-dropdown [options]="users" formControlName="reporterUserId"
+              placeholder="Select Item" [virtualScroll]="true" optionLabel="name" optionValue="id"
+              class="form-control"
+              [itemSize]="31" [filter]="false"></p-dropdown>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

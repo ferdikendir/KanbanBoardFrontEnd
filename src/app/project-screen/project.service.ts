@@ -48,4 +48,13 @@ export class ProjectService {
   addHeaderToProject(taskListHeader): Observable<any>{
     return this.httpService.post<any>(environment.apiUrl+ EndPoint.ADD_HEADER_TO_PROJECT, taskListHeader);
   }
+
+  updateCard(card){
+    return this.httpService.post<any>(environment.apiUrl+ EndPoint.UPDATE_CARD, card);
+  }
+
+  addCard(card){
+    return this.httpService.post<any>(environment.apiUrl+ EndPoint.ADD_CARD, card);
+  }
+
 }

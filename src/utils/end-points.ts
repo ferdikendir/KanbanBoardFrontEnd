@@ -12,4 +12,7 @@ export class EndPoint{
     public static readonly ADD_NEW_TASK_LIST_HEADER = "tasklistheader/addheader";
     public static readonly GET_ALL_TASK_LIST_HEADER_BY_PROJECT_ID = "tasklistheader/getallheaderbyprojectid";
     public static readonly ADD_HEADER_TO_PROJECT = "tasklistheader/addheadertoproject";
+    public static readonly UPDATE_CARD = "card/updatecard";
+    public static readonly ADD_CARD = "card/addcard";
+
 }

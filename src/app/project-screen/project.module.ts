@@ -17,6 +17,7 @@ import { MaterialModule } from './material.module';
 import { TaskListComponent } from './task-list/task-list.component';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { CardComponent } from './card/card.component';
+import {DropdownModule} from 'primeng/dropdown';
 @NgModule({
   declarations: [
     ProjectListComponent,
@@ -38,7 +39,8 @@ import { CardComponent } from './card/card.component';
     DragDropModule,
     CheckboxModule,
     MaterialModule,
-    NgbCollapseModule
+    NgbCollapseModule,
+    DropdownModule
   ]
 })
 export class ProjectModule { }
