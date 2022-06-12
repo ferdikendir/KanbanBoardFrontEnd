@@ -62,7 +62,17 @@ export class TaskListComponent implements OnInit {
   }
 
   onDrop(event) {
-    this.sharedService.drop(event);
+    const move = this.sharedService.drop(event);
+    const moveCard = {
+      cardId: move?.card?.id,
+      taskListHeader: move?.targetTaskListHeader?.trim(),
+    }
+    this.spinner.show()
+    this.projectService.moveCard(moveCard).pipe(finalize(() =>{
+      this.spinner.hide();
+    })).subscribe(res => {
+
+    })
   }
 
   //yeni card ekleme
@@ -163,7 +173,6 @@ export class TaskListComponent implements OnInit {
           name: res.user.fullName,
         }
       })
-      console.log(response.map(res => res.user.fullName))
     }, (error: any) => {});
   }
 }

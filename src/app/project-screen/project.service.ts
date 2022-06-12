@@ -57,4 +57,8 @@ export class ProjectService {
     return this.httpService.post<any>(environment.apiUrl+ EndPoint.ADD_CARD, card);
   }
 
+  moveCard(moveCard){
+    return this.httpService.post<any>(environment.apiUrl+ EndPoint.MOVE_CARD, moveCard);
+  }
+
 }
