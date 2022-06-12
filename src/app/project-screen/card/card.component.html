@@ -27,4 +27,25 @@
 
       <p class="card-text">{{ card?.content }}</p>
   </div>
+  <div class="card-footer text-muted">
+    <div class="row">
+      <div class="col-7">
+        <p [innerText]="tarihfark(card.createdDate, card.updatedDate)"></p>
+      </div>
+      <div class="col-5">
+        <div class="float-right">
+          <p-avatar
+            [label]="getFirstLetter(card.assignedUser)"
+            styleClass="mr-2"
+            [style]="{'background-color': '#9c27b0', 'color': '#ffffff'}"
+            shape="circle"></p-avatar>
+          <p-avatar
+            [label]="getFirstLetter(card.reporterUser)"
+            styleClass="mr-2"
+            [style]="{'background-color': '#9c27b0', 'color': '#ffffff'}"
+            shape="circle"></p-avatar>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

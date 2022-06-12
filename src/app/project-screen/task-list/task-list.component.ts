@@ -87,7 +87,6 @@ export class TaskListComponent implements OnInit {
         this.closePopup();
        })).subscribe((response: any) => {
         this.taskList.cards.push(response);
-      
        });
       } else{
          this.projectService.updateCard(newCard)

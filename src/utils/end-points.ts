@@ -15,5 +15,6 @@ export class EndPoint{
     public static readonly UPDATE_CARD = "card/updatecard";
     public static readonly ADD_CARD = "card/addcard";
     public static readonly MOVE_CARD = "card/movecard";
+    public static readonly UPDATE_TASK_LIST_HEADER = "tasklistheader/updatetasklistheader";
 
 }

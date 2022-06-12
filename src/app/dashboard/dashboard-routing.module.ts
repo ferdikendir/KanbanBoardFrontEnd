@@ -11,6 +11,9 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./../project-screen/project.module').then(m => m.ProjectModule)
+      },{
+        path: '',
+        loadChildren: () => import('./../task-list-header/task-list-header.module').then(m => m.TaskListHeaderModule)
       }
     ]
   },

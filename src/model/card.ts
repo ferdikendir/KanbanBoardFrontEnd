@@ -7,7 +7,7 @@ export interface Card{
     color?: string;
     content?: string;
     assignedUser?: User;
-    raporterUser?: User;
+    reporterUser?: User;
     createdDate: Date;
     updatedDate: Date;
     command?: string;
