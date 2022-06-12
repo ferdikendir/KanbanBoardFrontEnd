@@ -76,7 +76,8 @@ export class TaskListComponent implements OnInit {
         this.spinner.hide();
         this.closePopup();
        })).subscribe((response: any) => {
-
+        this.taskList.cards.push(response);
+      
        });
       } else{
          this.projectService.updateCard(newCard)
@@ -85,7 +86,11 @@ export class TaskListComponent implements OnInit {
       this.closePopup();
         }))
         .subscribe((response: any) => {
-
+          const index = this.findIndex(response);
+          if (index > -1) {
+            this.taskList.cards[index] = response;
+          }
+          this.taskList.cards = [...this.taskList.cards];
         });
       }
     } 
