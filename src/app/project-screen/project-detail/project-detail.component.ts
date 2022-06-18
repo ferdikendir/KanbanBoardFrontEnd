@@ -31,8 +31,8 @@ export class ProjectDetailComponent implements OnInit {
   }
   getTaskList(){
     this.taskLists$.subscribe((response: any) => {
-      this.taskLists = response.taskLists;
-      this.project = response.project
+      this.taskLists = response?.taskLists;
+      this.project = response?.project
     })
   }
 

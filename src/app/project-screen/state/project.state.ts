@@ -33,7 +33,7 @@ export class ProjectState {
     }
     
     @Action(ProjectAction)
-    getProjects(
+    getProjectsByUser(
         { patchState }: StateContext<ProjectStateModel>,
     ){
         return this.projectService.getAllProjects(this.loginService.currentUserValue.id).pipe(

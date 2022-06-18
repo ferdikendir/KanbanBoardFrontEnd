@@ -57,7 +57,7 @@ export class ProjectListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new ProjectAction);
+    //this.store.dispatch(new ProjectAction);
     this.createProjectForm();
     this.getAllTaskListHeader();
     this.getAllProjects();
