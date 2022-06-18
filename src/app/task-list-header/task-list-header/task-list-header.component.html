@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-table
   #taskListHeaderTable
   [value]="taskListHeader"
@@ -136,7 +137,7 @@
           [binary]="true"
           inputId="binary"
         ></p-checkbox>
-        <label for="binary" class="task-list-header">{{
+        <label for="binary" class="task-list-header">Addable: {{
           isAddable ? "Yes" : "No"
         }}</label>
       </div>

@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-contextMenu #cm [model]="items"></p-contextMenu>
 <div class="card">
   <p-table
@@ -7,13 +8,22 @@
     [(contextMenuSelection)]="selectedProject"
     [contextMenu]="cm"
   >
-    <ng-template pTemplate="caption"> Stack </ng-template>
+    <ng-template pTemplate="caption"> My Projects </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
         <th>Project Code</th>
         <th>Project Name</th>
         <th>Created Date</th>
         <th>Finish Date</th>
+        <th>
+          <button
+          type="button"
+          class="btn btn-primary"
+          (click)="showNewProjectDialog = true"
+        >
+          <i class="fa fa-plus"></i>
+        </button>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-project let-columns="columns">
@@ -75,41 +85,6 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog
-  [appendTo]="projectList"
-  [modal]="true"
-  [style]="{ width: '50vw' }"
-  [(visible)]="showAddNewTaskListHeader"
-  [breakpoints]="{ '960px': '75vw' }"
-  (onHide)="showAddNewTaskListHeader = false"
->
-  <ng-template pTemplate="header">
-    <h3 style="font-weight: bold">Add New Task List Header</h3>
-  </ng-template>
-  <ng-template pTemplate="content">
-    <div class="mt-2 mb-1">
-      <input
-        [(ngModel)]="addTaskListHeaderObj.header"
-        type="text"
-        class="p-inputtext-sm form-control"
-        placeholder="Small"
-        pInputText
-      />
-      <div class="field-checkbox mb-1">
-        <p-checkbox
-          [(ngModel)]="addTaskListHeaderObj.isAddable"
-          [binary]="true"
-          inputId="binary"
-        ></p-checkbox>
-        <label class="task-list-header" for="binary">Is Addable</label>
-      </div>
-    </div>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <p-button label="Add New" (click)="addNewTaskListHeader()"></p-button>
-  </ng-template>
-</p-dialog>
 
 <p-dialog
   [appendTo]="projectList"
@@ -153,5 +128,46 @@
   </div>
   <ng-template pTemplate="footer">
     <p-button label="Submit" (click)="addUserToProject()"></p-button>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog
+  [appendTo]="projectList"
+  [modal]="true"
+  [(visible)]="showNewProjectDialog"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw' }"
+  (onHide)="showNewProjectDialog = false"
+>
+  <ng-template pTemplate="header">
+    <h3 style="font-weight: bold">
+      Add New Project
+    </h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <form  [formGroup]="projectForm">
+    <div class="mt-2 mb-1">
+      <input
+        formControlName="projectName"
+        type="text"
+        class="p-inputtext-sm form-control"
+        placeholder="project Name"
+        pInputText
+      />
+    </div>
+      <div class="mt-2 mb-1">
+        <input
+          formControlName="finishDate"
+          type="datetime-local"
+          class="p-inputtext-sm form-control"
+          placeholder="Finish Date"
+          pInputText
+        />
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button label="Submit" (onClick)="createNewProject(projectForm.value)"  type="submit" ></p-button>
   </ng-template>
 </p-dialog>

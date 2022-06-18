@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { finalize, Observable } from 'rxjs';
 import { LoginService } from 'src/app/login-screen/login.service';
 import { Project } from 'src/model/project';
@@ -14,6 +14,7 @@ import { ProjectService } from '../project.service';
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss'],
+  providers: [MessageService]
 })
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
@@ -26,6 +27,8 @@ export class ProjectListComponent implements OnInit {
   showAddTaskListHeaderDialogModal: boolean = false;
   showAddNewTaskListHeader = false;
 
+  showNewProjectDialog = false;
+
   selectedTaskListHeader: TaskListHeader[] = [];
   defaultTaskListHeader: TaskListHeader[] = [];
 
@@ -36,16 +39,20 @@ export class ProjectListComponent implements OnInit {
 
   addTaskListHeaderObj: TaskListHeader;
 
+  projectForm: FormGroup
+
   constructor(
     private loginService: LoginService,
     private spinner: NgxSpinnerService,
     private projectService: ProjectService,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
+    this.createProjectForm();
     this.getAllTaskListHeader();
-    this.createNewTaskListHeaderObject();
     this.getAllProjects();
     this.items = [
       {
@@ -66,7 +73,11 @@ export class ProjectListComponent implements OnInit {
         label: 'Add Task List',
         icon: 'pi pi-fw pi-times',
         command: (event) => this.getAllTaskListHeaderByProjectId(),
-      },
+      },{
+        label: 'Go To Task List Options',
+        icon: 'pi pi-fw pi-times',
+        command: (event) => this.router.navigate(['/dashboard/task-list-options'], {queryParams: {projectId: this.selectedProject.id}}),
+      }
     ];
   }
 
@@ -128,16 +139,20 @@ export class ProjectListComponent implements OnInit {
     const projectUser: ProjectUserAdd = {
       projectId: this.selectedProject.id,
       mailList: this.userList.map((user) => user.email),
+      addedBy: this.loginService.currentUserValue.fullName,
+      project: this.selectedProject,
     };
 
     this.projectService.addUserToProject<any>(projectUser).subscribe(
       (response) => {
         this.spinner.hide();
         this.showAddUserDialogModal = false;
+        this.messageService.add({severity:'success', summary: 'Success', detail: 'Add Successful', life: 3000});
       },
       (error) => {
         this.spinner.hide();
-        this.showAddUserDialogModal = false;
+        this.showAddUserDialogModal = false;        
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'Add Failed', life: 3000});
       }
     );
   }
@@ -158,34 +173,10 @@ export class ProjectListComponent implements OnInit {
           this.spinner.hide();
           this.showAddTaskListHeaderDialogModal = false;
         })
-      )
-      .subscribe(
-        (response) => {},
-      );
-  }
-
-  addNewTaskListHeader() {
-    this.spinner.show();
-    this.projectService
-      .addNewTaskListHeader(this.addTaskListHeaderObj)
-      .pipe(finalize(() => {
-
-          this.spinner.hide();
-          this.showAddNewTaskListHeader = false;
-          this.createNewTaskListHeaderObject();
-      }))
-      .subscribe(
-        (response) => {
-          this.getAllTaskListHeader();
-        }
-      );
-  }
-
-  createNewTaskListHeaderObject() {
-    this.addTaskListHeaderObj = {
-      header: '',
-      isAddable: true,
-    };
+      ).subscribe(
+        (response: any) => {
+          this.router.navigate(['dashboard/project-detail/'+ response.projectId]);
+        });
   }
 
   getAllTaskListHeader() {
@@ -215,5 +206,28 @@ export class ProjectListComponent implements OnInit {
 
   disabledHeader(item) {
     return this.defaultTaskListHeader.some((header) => header === item);
+  }
+
+  createNewProject(project){
+    this.spinner.show();
+    project.userIds = [this.loginService.currentUserValue.id];
+    this.projectService.addProject(project)
+    .pipe(finalize(() => {
+      this.spinner.hide();
+      this.showNewProjectDialog = false;
+    }))
+    .subscribe( response =>{
+      this.getAllProjects();
+      this.messageService.add({severity:'success', summary: 'Success', detail: 'Add Successful', life: 3000});
+    }, error => {
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'Add Failed', life: 3000});
+    });
+  }
+
+  createProjectForm(){
+    this.projectForm = this.fb.group({
+      projectName: ['', Validators.required],
+      finishDate: ['', Validators.required],
+    });
   }
 }

@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import {CheckboxModule} from 'primeng/checkbox';
 import {DialogModule} from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import {DialogModule} from 'primeng/dialog';
     ButtonModule,
     InputTextModule,
     CheckboxModule,
-    DialogModule
+    DialogModule,
+    ToastModule
   ]
 })
 export class TaskListHeaderModule { }

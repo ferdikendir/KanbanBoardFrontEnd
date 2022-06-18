@@ -11,7 +11,7 @@ import { EndPoint } from "src/utils/end-points";
 })
 export class LoginService {
 
-    private currentUserSubject: BehaviorSubject<User>;
+    private currentUserSubject: BehaviorSubject<any>;
     public currentUser: Observable<User>;
 
     constructor(
@@ -30,12 +30,21 @@ export class LoginService {
         return this.http.post((environment.apiUrl+ EndPoint.LOGIN), user )
         .pipe(map(user => {
             if(user){
-                localStorage.setItem('currentUser', JSON.stringify(user));
-
-                this.currentUserSubject.next(user);
-                    
+                this.saveUser(user);
                 this.router.navigate(['/dashboard']);
             }
         }));
+    }
+
+    saveUser(user){
+        localStorage.setItem('currentUser', JSON.stringify(user));
+
+        this.currentUserSubject.next(user);
+    }
+
+    logOut(){
+        localStorage.removeItem('currentUser');
+        this.currentUserSubject.next(null);
+        this.router.navigate(['/login']);
     }
 }

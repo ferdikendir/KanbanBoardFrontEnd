@@ -1,0 +1,28 @@
+<p-contextMenu #cm [model]="items"></p-contextMenu>
+
+<div class="card">
+    <p-table [value]="taskList" [(contextMenuSelection)]="selectedTaskList" [contextMenu]="cm" dataKey="code" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Code</th>
+                <th>Header</th>
+                <th>Color</th>
+                <th>Project Name</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr [pContextMenuRow]="product">
+                <td>{{product.code}}</td>
+                <td>{{product.taskListHeader.header}}</td>
+                <td>
+                    <input type="color" [(ngModel)]="product.color">
+                </td>
+                <td>{{product.project.projectName}}</td>
+                <td>
+                    <button pButton type="button" label="Change Color" (click)="editTaskList(product)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

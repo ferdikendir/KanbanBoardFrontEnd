@@ -19,6 +19,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { CardComponent } from './card/card.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {AvatarModule} from 'primeng/avatar';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
   declarations: [
     ProjectListComponent,
@@ -42,7 +43,8 @@ import {AvatarModule} from 'primeng/avatar';
     MaterialModule,
     NgbCollapseModule,
     DropdownModule,
-    AvatarModule
+    AvatarModule,
+    ToastModule
   ]
 })
 export class ProjectModule { }

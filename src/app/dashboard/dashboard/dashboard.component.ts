@@ -14,7 +14,8 @@ export class DashboardComponent {
     public isMenuCollapsed = true;
 
     constructor(
-        private router: Router
+        private router: Router,
+        private loginService: LoginService
     ) {}
 
     ngOnInit(): void {
@@ -26,6 +27,10 @@ export class DashboardComponent {
         //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
         //Add 'implements AfterViewInit' to the class.
         this.router.navigate(["dashboard/project-list"]);
+    }
+
+    logOut() {
+        this.loginService.logOut();
     }
 
     

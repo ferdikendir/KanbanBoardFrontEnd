@@ -14,6 +14,12 @@ const routes: Routes = [
       },{
         path: '',
         loadChildren: () => import('./../task-list-header/task-list-header.module').then(m => m.TaskListHeaderModule)
+      },{
+        path: '',
+        loadChildren: () => import('./../task-list/task-list.module').then(m => m.TaskListModule)
+      },{
+        path: '',
+        loadChildren: () => import('./../my-profile/my-profile.module').then(m => m.MyProfileModule)
       }
     ]
   },

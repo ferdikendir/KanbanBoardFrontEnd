@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 import { LoginService } from 'src/app/login-screen/login.service';
 import { ProjectService } from '../project.service';
@@ -11,6 +13,7 @@ import { SharedService } from '../shared.service';
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css'],
+  providers: [MessageService]
 })
 export class TaskListComponent implements OnInit {
   @Input() taskList: any;
@@ -29,7 +32,8 @@ export class TaskListComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private loginService: LoginService,
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private messageService: MessageService
   ) {}
   public isCollapsed = false;
   addCardForm: FormGroup;
@@ -82,25 +86,9 @@ export class TaskListComponent implements OnInit {
       var newCard: any = Object.assign({}, this.addCardForm.value);
       if (!newCard.id) {
         newCard.taskListId = this.taskListId
-       this.projectService.addCard(newCard).pipe(finalize(() =>{
-        this.spinner.hide();
-        this.closePopup();
-       })).subscribe((response: any) => {
-        this.taskList.cards.push(response);
-       });
+        this.add(newCard);
       } else{
-         this.projectService.updateCard(newCard)
-        .pipe(finalize(() =>{
-          this.spinner.hide();
-      this.closePopup();
-        }))
-        .subscribe((response: any) => {
-          const index = this.findIndex(response);
-          if (index > -1) {
-            this.taskList.cards[index] = response;
-          }
-          this.taskList.cards = [...this.taskList.cards];
-        });
+         this.update(newCard);
       }
     } 
     // else
@@ -108,6 +96,37 @@ export class TaskListComponent implements OnInit {
     //     'Please fill all required fields.',
     //     'Missing Form'
     //   );
+  }
+
+  update(card){
+    this.projectService.updateCard(card)
+    .pipe(finalize(() =>{
+      this.spinner.hide();
+      this.closePopup();
+    }))
+    .subscribe((response: any) => {
+      const index = this.findIndex(response);
+      if (index > -1) {
+        this.taskList.cards[index] = response;
+      }
+      this.taskList.cards = [...this.taskList.cards];      
+      this.messageService.add({severity:'success', summary: 'Success', detail: 'Update Successful', life: 3000});
+      }, error => {
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'Update Failed', life: 3000});
+      });
+    }
+
+  add(card){
+    this.projectService.addCard(card).pipe(finalize(() =>{
+      this.spinner.hide();
+      this.closePopup();
+     })).subscribe((response: any) => {
+      this.taskList.cards.push(response);
+      this.messageService.add({severity:'success', summary: 'Succes', detail: 'Add Successful', life: 3000});
+     }, error => {
+      
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'Add Failed', life: 3000});
+     });
   }
 
   displayStyle = 'none';
@@ -134,9 +153,17 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteCard() {
-    var index = this.findIndex(this.selectedCard);
-    if (index > -1) this.taskList.cards.splice(index, 1);
-    this.closeDeletePopup();
+    this.spinner.show();
+    this.projectService.deleteCard(this.selectedCard).subscribe((response: any) => {
+      this.spinner.hide();
+      this.messageService.add({severity:'success', summary: 'Succes', detail: 'Delete Successful', life: 3000});
+      delete this.taskList.cards[this.findIndex(this.selectedCard)];
+      this.taskList.cards = [...this.taskList.cards];
+      this.closeDeletePopup();
+    }, error => {
+      this.spinner.hide();
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'Delete Failed', life: 3000});
+    })
   }
 
   closeDeletePopup() {

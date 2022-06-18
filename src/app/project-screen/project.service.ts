@@ -16,6 +16,9 @@ export class ProjectService {
     private httpService: HttpClient
   ) { }
 
+  addProject(project){
+    return this.httpService.post<any>(environment.apiUrl+ EndPoint.ADD_PROJECT, project);
+  }
   
   getAllProjects <T>(userId) {
     return this.httpService.get<T[]>(environment.apiUrl+ EndPoint.GET_ALL_PROJECT+ '?userId=' + userId);
@@ -45,8 +48,8 @@ export class ProjectService {
     return this.httpService.post<TaskList>(environment.apiUrl+ EndPoint.ADD_NEW_TASK_LIST_HEADER, taskListHeader);
   }
 
-  addHeaderToProject(taskListHeader): Observable<any>{
-    return this.httpService.post<any>(environment.apiUrl+ EndPoint.ADD_HEADER_TO_PROJECT, taskListHeader);
+  addHeaderToProject(taskListHeader): Observable<TaskList>{
+    return this.httpService.post<TaskList>(environment.apiUrl+ EndPoint.ADD_HEADER_TO_PROJECT, taskListHeader);
   }
 
   updateCard(card){
@@ -61,4 +64,7 @@ export class ProjectService {
     return this.httpService.post<any>(environment.apiUrl+ EndPoint.MOVE_CARD, moveCard);
   }
 
+  deleteCard(card){
+    return this.httpService.post<any>(environment.apiUrl+ EndPoint.DELETE_CARD, card);
+  }
 }

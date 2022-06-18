@@ -4,6 +4,7 @@ export class EndPoint{
 
     public static readonly GET_ALL_PROJECT = "project/getall";
     public static readonly GET_ALL_USER_BY_PROJECT_ID = "project/getalluserbyprojectid";
+    public static readonly ADD_PROJECT = "project/addproject";
 
     public static readonly ADD_USER_TO_PROJECT = "project/addusertoproject";
 
@@ -16,5 +17,8 @@ export class EndPoint{
     public static readonly ADD_CARD = "card/addcard";
     public static readonly MOVE_CARD = "card/movecard";
     public static readonly UPDATE_TASK_LIST_HEADER = "tasklistheader/updatetasklistheader";
+    public static readonly UPDATE_TASK_LİST = "tasklist/updatetasklist";
 
+    public static readonly UPDATE_PROFİLE = "user/updateprofile";
+    public static readonly DELETE_CARD = "card/deletecard";
 }
