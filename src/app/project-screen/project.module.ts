@@ -44,7 +44,7 @@ import { ToastModule } from 'primeng/toast';
     NgbCollapseModule,
     DropdownModule,
     AvatarModule,
-    ToastModule
+    ToastModule,
   ]
 })
 export class ProjectModule { }

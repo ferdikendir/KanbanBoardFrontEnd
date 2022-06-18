@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { StoreModule } from './store/store.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -20,7 +21,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     ReactiveFormsModule,
     NgxSpinnerModule,
-    NgbModule
+    NgbModule,
+    StoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]

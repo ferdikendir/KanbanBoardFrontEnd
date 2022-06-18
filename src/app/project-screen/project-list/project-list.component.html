@@ -29,19 +29,19 @@
     <ng-template pTemplate="body" let-project let-columns="columns">
       <tr [pContextMenuRow]="project">
         <td>
-          <span class="p-column-title">Project Code</span>{{ project.id }}
+          <span class="p-column-title">Project Code</span>{{ project?.id }}
         </td>
         <td>
           <span class="p-column-title">Project Name</span
-          >{{ project.projectName }}
+          >{{ project?.projectName }}
         </td>
         <td>
           <span class="p-column-title">Created Date</span
-          >{{ project.createdDate | date }}
+          >{{ project?.createdDate | date }}
         </td>
         <td>
           <span class="p-column-title">Finish Date</span
-          >{{ project.finishDate | date }}
+          >{{ project?.finishDate | date }}
         </td>
       </tr>
     </ng-template>

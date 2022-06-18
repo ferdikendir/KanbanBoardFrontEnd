@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Select, Store } from '@ngxs/store';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, MessageService } from 'primeng/api';
 import { finalize, Observable } from 'rxjs';
@@ -9,6 +10,8 @@ import { Project } from 'src/model/project';
 import { ProjectUserAdd } from 'src/model/project-user-add';
 import { TaskListHeader } from 'src/model/task-list-header';
 import { ProjectService } from '../project.service';
+import { ProjectAction } from '../state/project.action';
+import { ProjectState } from '../state/project.state';
 
 @Component({
   selector: 'app-project-list',
@@ -17,6 +20,8 @@ import { ProjectService } from '../project.service';
   providers: [MessageService]
 })
 export class ProjectListComponent implements OnInit {
+  @Select (ProjectState.getProjects) projects$: Observable<Project[]>;
+
   projects: Project[] = [];
   items: MenuItem[];
   selectedProject: Project;
@@ -47,10 +52,12 @@ export class ProjectListComponent implements OnInit {
     private projectService: ProjectService,
     private router: Router,
     private fb: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private store:  Store
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(new ProjectAction);
     this.createProjectForm();
     this.getAllTaskListHeader();
     this.getAllProjects();
@@ -83,14 +90,11 @@ export class ProjectListComponent implements OnInit {
 
   getAllProjects() {
     this.spinner.show();
-    this.projectService
-      .getAllProjects<any>(this.loginService.currentUserValue.id)
+    this.projects$
       .subscribe(
         (response) => {
-          this.projects = response.map((res) => res?.project);
-          this.spinner.hide();
-        },
-        (error) => {
+          
+          this.projects = response;
           this.spinner.hide();
         }
       );
@@ -217,10 +221,8 @@ export class ProjectListComponent implements OnInit {
       this.showNewProjectDialog = false;
     }))
     .subscribe( response =>{
-      this.getAllProjects();
+      this.store.dispatch(new ProjectAction());
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Add Successful', life: 3000});
-    }, error => {
-      this.messageService.add({severity:'error', summary: 'Error', detail: 'Add Failed', life: 3000});
     });
   }
 
