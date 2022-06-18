@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { TaskList } from 'src/model/task-list';
 import { ProjectService } from '../project.service';
+import { TaskListAction } from '../state/project.action';
+import { ProjectState } from '../state/project.state';
 
 @Component({
   selector: 'app-project-detail',
@@ -10,20 +14,24 @@ import { ProjectService } from '../project.service';
 })
 export class ProjectDetailComponent implements OnInit {
 
+  @Select(ProjectState.getTaskList) taskLists$: Observable<TaskList[]>;
+
   taskLists: TaskList[] = []
   project;
   constructor(
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private store: Store
   ) { }
 
   ngOnInit(): void {
     var boardId = this.router.url.split('/')
-    this.getTaskList(boardId[boardId.length - 1])
+    this.store.dispatch(new TaskListAction(parseInt(boardId[boardId.length - 1])))
+    this.getTaskList();
   }
-  getTaskList(projectId){
-    this.projectService.getTaskListByProjectId(projectId).subscribe( (response: any) => {
-      this.taskLists = response.taskLists
+  getTaskList(){
+    this.taskLists$.subscribe((response: any) => {
+      this.taskLists = response.taskLists;
       this.project = response.project
     })
   }

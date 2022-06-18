@@ -3,17 +3,20 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { map, tap } from "rxjs";
 import { LoginService } from "src/app/login-screen/login.service";
 import { Project } from "src/model/project";
+import { TaskList } from "src/model/task-list";
 import { ProjectService } from "../project.service";
-import { ProjectAction } from "./project.action";
+import { ProjectAction, TaskListAction } from "./project.action";
 
 export interface ProjectStateModel {
     projects: Project[] |null;
+    taskList: TaskList[] |null;
 }
 
 @State<ProjectStateModel>({
     name: 'projects',
     defaults: {
-        projects: null
+        projects: null,
+        taskList: null
     }
 })
 
@@ -41,5 +44,24 @@ export class ProjectState {
                 });
             })
         );
+    }
+
+    @Selector()
+    public static getTaskList(state: ProjectStateModel) {
+        return state.taskList;
+    }
+
+    @Action(TaskListAction)
+    getTaskList(
+        { patchState }: StateContext<ProjectStateModel>,
+        { projectId }: TaskListAction
+    ){
+        return this.projectService.getTaskListByProjectId(projectId).pipe(
+            tap((taskList: TaskList[]) => {
+                patchState({
+                    taskList: taskList
+                });
+            })
+        )
     }
 }
